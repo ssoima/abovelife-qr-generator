@@ -90,7 +90,6 @@ def generate_svg_qr(seller_id, qrcode_id):
         svg_tag = match.group(0)
         svg_content = match.group(1)
         modified_svg = re.sub(r'<svg\s+', f'<svg x="4" y="47" ', svg_tag)
-        print(modified_svg)
 
         with open('qr_code_template.svg', 'r') as templateFile:
             svg_template = templateFile.read()
@@ -115,7 +114,7 @@ def create_above_qr(count, seller_ids=None, seller_name=None):
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    create_above_qr(5, seller_name="marcel")
+    create_above_qr(1, seller_name="outline")
     # print_hi('PyCharm')
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
