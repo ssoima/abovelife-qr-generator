@@ -7,7 +7,7 @@ import cairosvg
 
 os.environ['DEFUSEDXML_ALLOW_CDATA_TAGS'] = '1'
 
-CURRENT_ENVIRONMENT = "test"
+CURRENT_ENVIRONMENT = "prod" #"test"
 
 #Test Environment Variables
 STRAPI_API_TOKEN_TEST = "9892de42d7b69bf675a75ccfdb33b9d778e55c98b12590eb621abdfb7537b314f227e751328e4df2e57ead9c50ec66ebc1eb3366fbcc072018ff174d3b62a5c357a3a62059496372666f9b96958122bc345348e210c4e2705e17b320537f83286fcc908e10ae7f816684036cd7f0e219af948d3d06ef36daf8a0d3c5219f79d9"
@@ -86,17 +86,17 @@ def create_seller(name=None):
         return None
 
 
-def generate_svg_qr(seller_id, qrcode_id, file_path):
+def generate_svg_qr(seller_id, qr_code_url, file_path):
     base_url = '%s/qr/' % ABOVE_FRONTEND_URL
 
     # Create the subfolder if it doesn't exist
 
-    url = base_url + str(qrcode_id)
+    url = base_url + str(qr_code_url)
 
     qr = segno.make(url, error='m')
 
     # Save the QR code as a SVG file
-    qr.save(file_path, scale=4, kind='svg')
+    qr.save(file_path, scale=3, kind='svg')
     with open(file_path, "r") as input_file:
         svg_data = input_file.read()
 
@@ -107,9 +107,9 @@ def generate_svg_qr(seller_id, qrcode_id, file_path):
     if match:
         svg_tag = match.group(0)
         svg_content = match.group(1)
-        modified_svg = re.sub(r'<svg\s+', f'<svg x="4" y="47" ', svg_tag)
+        modified_svg = re.sub(r'<svg\s+', f'<svg x="15" y="63" ', svg_tag)
 
-        with open('templates/qr_code_template_v5_no_border.svg', 'r') as templateFile:
+        with open('templates/qr_code_template_v6_85x53.svg', 'r') as templateFile:
             svg_template = templateFile.read()
 
         qr_in_template = svg_template.replace('<insertqr/>', modified_svg)
@@ -117,7 +117,7 @@ def generate_svg_qr(seller_id, qrcode_id, file_path):
         with open(file_path, 'w') as f:
             f.write(qr_in_template)
 
-    print("Created QR code \"%s\" for seller \"%s\"" % (qrcode_id, seller_id))
+    print("Created QR code \"%s\" for seller \"%s\"" % (qr_code_url, seller_id))
 
 
 def generate_png(seller_id, qr_id, svg_file_path, png_file_path, pdf_file_path, eps_file_path):
@@ -151,18 +151,18 @@ def create_above_qr(count, seller_ids=None, seller_name=None):
         for i in range(count):
             (qr_id, qr_url) = create_strapi_qr(seller_id)
             svg_file_path = create_file_path_with_extension(seller_id, qr_id, qr_url, 'svg')
-            generate_svg_qr(seller_id, qr_id, svg_file_path)
-            png_file_path = create_file_path_with_extension(seller_id, qr_id, qr_url, 'png')
-            pdf_file_path = create_file_path_with_extension(seller_id, qr_id, qr_url, 'pdf')
-            eps_file_path = create_file_path_with_extension(seller_id, qr_id, qr_url, 'eps')
+            generate_svg_qr(seller_id, qr_url, svg_file_path)
+            #png_file_path = create_file_path_with_extension(seller_id, qr_id, qr_url, 'png')
+            #pdf_file_path = create_file_path_with_extension(seller_id, qr_id, qr_url, 'pdf')
+            #eps_file_path = create_file_path_with_extension(seller_id, qr_id, qr_url, 'eps')
 
-            generate_png(seller_id, qr_id, svg_file_path, png_file_path, pdf_file_path, eps_file_path)
+            #generate_png(seller_id, qr_id, svg_file_path, png_file_path, pdf_file_path, eps_file_path)
 
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    create_above_qr(count=5, seller_name="TestWith UUID")
+    create_above_qr(count=5, seller_name="New Seller Batch 2 - 10")
     # print_hi('PyCharm')
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
